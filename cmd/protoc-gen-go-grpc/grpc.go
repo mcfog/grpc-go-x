@@ -426,6 +426,7 @@ func genServerMethod(gen *protogen.Plugin, file *protogen.File, g *protogen.Gene
 	}
 	if genRecv {
 		g.P("Recv() (*", method.Input.GoIdent, ", error)")
+		g.P("RecvMessage(*", method.Input.GoIdent, ") error")
 	}
 	g.P(grpcPackage.Ident("ServerStream"))
 	g.P("}")
@@ -449,9 +450,13 @@ func genServerMethod(gen *protogen.Plugin, file *protogen.File, g *protogen.Gene
 		g.P()
 	}
 	if genRecv {
+		g.P("func (x *", streamType, ") RecvMessage(m *", method.Input.GoIdent, ") error {")
+		g.P("return x.ServerStream.RecvMsg(m)")
+		g.P("}")
+		g.P()
 		g.P("func (x *", streamType, ") Recv() (*", method.Input.GoIdent, ", error) {")
 		g.P("m := new(", method.Input.GoIdent, ")")
-		g.P("if err := x.ServerStream.RecvMsg(m); err != nil { return nil, err }")
+		g.P("if err := x.RecvMessage(m); err != nil { return nil, err }")
 		g.P("return m, nil")
 		g.P("}")
 		g.P()
