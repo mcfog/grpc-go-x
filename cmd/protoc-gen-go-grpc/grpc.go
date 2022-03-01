@@ -220,7 +220,7 @@ func genService(gen *protogen.Plugin, file *protogen.File, g *protogen.Generated
 	g.P("// It's only intended for direct use with ", grpcPackage.Ident("RegisterService"), ",")
 	g.P("// and not to be introspected or modified (even as a copy)")
 	g.P("var ", serviceDescVar, " = ", grpcPackage.Ident("ServiceDesc"), " {")
-	g.P("ServiceName: ", strconv.Quote(string(service.Desc.FullName())), ",")
+	g.P("ServiceName: ", strconv.Quote(string(serviceName(service))), ",")
 	g.P("HandlerType: (*", serverType, ")(nil),")
 	g.P("Methods: []", grpcPackage.Ident("MethodDesc"), "{")
 	for i, method := range service.Methods {
