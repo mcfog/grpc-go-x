@@ -289,7 +289,7 @@ func genClientMethod(gen *protogen.Plugin, file *protogen.File, g *protogen.Gene
 	}
 	streamType := unexport(service.GoName) + method.GoName + "Client"
 	serviceDescVar := service.GoName + "_ServiceDesc"
-	g.P("sTReam, err := c.cc.NewStream(ctx, &", serviceDescVar, ".Streams[", index, `], "`, sname, `", opts...)`)
+	g.P("sTReam, err := c.cc.NewStream(cTx, &", serviceDescVar, ".Streams[", index, `], "`, sname, `", opts...)`)
 	g.P("if err != nil { return nil, err }")
 	g.P("x := &", streamType, "{sTReam}")
 	if !method.Desc.IsStreamingClient() {
@@ -400,7 +400,7 @@ func genServerMethod(gen *protogen.Plugin, file *protogen.File, g *protogen.Gene
 		g.P("in = new(", method.Input.GoIdent, ")")
 		g.P("}")
 		g.P("if err := dEc(in); err != nil { return nil, err }")
-		g.P("if iNTerceptor == nil { return sRv.(", service.GoName, "Server).", method.GoName, "(ctx, in) }")
+		g.P("if iNTerceptor == nil { return sRv.(", service.GoName, "Server).", method.GoName, "(cTx, in) }")
 		g.P("iNFo := &", grpcPackage.Ident("UnaryServerInfo"), "{")
 		g.P("Server: sRv,")
 		g.P("FullMethod: ", strconv.Quote(fmt.Sprintf("/%s/%s", serviceName(service), method.Desc.Name())), ",")
